@@ -54,7 +54,7 @@ export default function Dashboard({ match }) {
         </div>
 
         <div className="gpbutton">
-          <button>
+          <button className="repo">
             <FaBook size={15} color="#000" /> Repositorires {data.public_repos}
           </button>
           <button> Packages</button>
@@ -65,7 +65,7 @@ export default function Dashboard({ match }) {
         <p>Pinned repositories</p>
 
         <Fotter>
-          {repos.slice(0, 3).map(item => (
+          {repos.slice(0, 6).map(item => (
             <FotterLi key={item.id}>
               <a href={item.url}>
                 <FaBook size={15} color="#000" />

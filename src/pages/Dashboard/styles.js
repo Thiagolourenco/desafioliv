@@ -36,6 +36,13 @@ export const Content = styled.div`
     display: flex;
     flex-direction: row;
 
+    .repo {
+      border-top: 1px solid #d43e3e;
+      border-left: 1px solid #d43e3e;
+      border-right: 1px solid #d43e3e;
+      border-radius: 5px;
+      padding: 10px;
+    }
     button {
       border: 0;
       background: transparent;
@@ -46,10 +53,10 @@ export const Content = styled.div`
 `;
 
 export const Fotter = styled.ul`
-  display: flex;
-  list-style: none;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 15px;
+  margin-top: 10px;
 `;
 
 export const FotterLi = styled.li`
