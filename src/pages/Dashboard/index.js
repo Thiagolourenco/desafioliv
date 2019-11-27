@@ -1,82 +1,93 @@
-import React, {useEffect, useState} from 'react'
-import {FaGithub, FaMapMarkerAlt, FaEnvelope, FaBook} from 'react-icons/fa'
+import React, { useEffect, useState } from "react";
+import {
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaBook,
+  FaStar,
+  FaCodeBranch
+} from "react-icons/fa";
 
-import {Container, Content,Footter} from  './styles'
+import Header from "../../components/Header";
+import api from "../../services/api";
 
-import api from '../../services/api'
+import { Container, Content, Fotter, FotterLi } from "./styles";
 
-export default function Dashboard({match}){
+export default function Dashboard({ match }) {
+  const [data, setData] = useState([]);
+  const [repos, setRepos] = useState([]);
 
-    const [data, setData] = useState([]);
+  useEffect(() => {
+    async function loadingApi() {
+      const name = match.params.name;
+      const response = await api.get(`/users/${name}`);
 
-    useEffect(() => {
-        async function loadingApi(){
-            const response = await api.get('/users', {
-                headers: {
-                    user: match.params.id
-                }
-            })
+      setData(response.data);
+      console.log(match.params.name);
+    }
 
-            console.log(response.data)
-            setData(response.data)
-        }
+    loadingApi();
+  }, [match.params.name]);
 
-        loadingApi();
-    }, [match.params.id])
+  useEffect(() => {
+    async function loadRepos() {
+      const name = match.params.name;
+      const response = await api.get(`users/${name}/repos`);
 
-    return (
-        <Container>
-            <header>
-                <FaGithub size={35} color="#fff"/>
-                <a>Why Github?</a>
-                <nav>
-                    <a href="#">Enterprise</a>
-                    <a href="#">Explore</a>
-                    <a href="#">Marketplace</a>
-                    <a href="">Picing</a>    
-                </nav>  
-                <input placeholder="search"/>   
-                <button>Sign In</button>  
-                <button className="signup">Sign Up</button>         
-            </header>
+      setRepos(response.data);
+    }
+    loadRepos();
+  }, [match.params.name]);
 
-            <Content>
-                <div>
-                    <img src={data.avatar_url}/>
-                    <p><FaMapMarkerAlt size={15} color="#000"/>     {data.location}</p>
-                    <p>http://www.camuda.org</p>
-                    <p><FaEnvelope size={15} color="#000" />   info@camunda.com</p>
-                </div>
+  return (
+    <Container>
+      <Header />
+      <Content>
+        <div>
+          <img src={data.avatar_url} alt="AvatarUser" />
+          <p>
+            <FaMapMarkerAlt size={15} color="#000" /> {data.location}
+          </p>
+          <p> {data.blog}</p>
+          <p>
+            <FaEnvelope size={15} color="#000" /> {data.email}
+          </p>
+        </div>
 
-                <div className="gpbutton">
-                    <button ><FaBook size={15} color="#000"/>  Repositorires {data.public_repos}</button>
-                    <button>  Packages</button>
-                    <button>  People</button>
-                    <button>  Projects</button>
+        <div className="gpbutton">
+          <button>
+            <FaBook size={15} color="#000" /> Repositorires {data.public_repos}
+          </button>
+          <button> Packages</button>
+          <button> People</button>
+          <button> Projects</button>
+        </div>
 
-                </div>
+        <p>Pinned repositories</p>
 
-                
+        <Fotter>
+          {repos.slice(0, 3).map(item => (
+            <FotterLi key={item.id}>
+              <a href={item.url}>
+                <FaBook size={15} color="#000" />
+                {item.name}
+              </a>
+              <p>{item.description}</p>
 
-                <p>Pinned repositories</p>
-
-                <Footter>
-                   <div>
-                        <a href="#">camunda-bpm-platform</a>
-                        <p>Flexible fow workend and decision</p>
-                        <ul>
-                            <li>Java</li>
-                            <li></li>
-                        </ul>
-                   </div>
-                   <div></div>
-                   <div></div>
-                   <div></div>
-                   <div></div>
-                </Footter>
-
-               
-            </Content>
-        </Container>
-    )
+              <ul>
+                <li>{item.language}</li>
+                <li>
+                  <FaStar size={15} color="#000" />
+                  {item.stargazers_count}
+                </li>
+                <li>
+                  <FaCodeBranch size={15} color="#000" />
+                  {item.forks}
+                </li>
+              </ul>
+            </FotterLi>
+          ))}
+        </Fotter>
+      </Content>
+    </Container>
+  );
 }
